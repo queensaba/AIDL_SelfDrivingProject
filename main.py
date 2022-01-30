@@ -1,35 +1,71 @@
 # Main file of the project
 
+import torch
+import os
+import numpy as np
+import argparse as ap
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-DATA_DIR = "/Users/helenamartin/Desktop/AI-Project/"
 
+def get_args():
+    parser = ap.ArgumentParser()
+    parser.add_argument("-j", "--json_path", type=str, required=True,
+                        help="Path to folder with JSON data.")
+    parser.add_argument("-i", "--imgs", type=str, required=True,
+                       help="Path to folder with images.")
+    args = parser.parse_args()
+    return args
 
-class SDDataLoader(json_path):
+class SDDataLoader():
     """
     Self Driving Prokect Dataset.
     """
-    self.dataset_annotations = self.annotations_to_csv(json_path)
-    self.dataset = self.generate_dict(self.dataset_annotations, DATA_DIR)
-    self.train,self.val = self.split_dataset(self.dataset_annotations)
+    #self.images = glob.glob(os.path.join(DATA_DIR, '*.jpg'))
+    #self.dataset_annotations = self.annotations_to_csv(json_path)
+    #self.dataset = self.generate_dict(self.dataset_annotations, DATA_DIR)
+    #self.train,self.val = self.split_dataset(self.dataset_annotations)
 
-    def annotations_to_csv(self, json_path):
+    def __getitem__(self, idx):
+        img_path = os.path.join(DATA_DIR, self.images[idx])
+
+
+    def annotations_to_csv(self, json_path, DATA_DIR):
+        dataset = {}
         import pandas as pd
+        from PIL import Image
+        from torchvision import transforms
         csv_data = pd.read_json(json_path)
+        for idx,item in enumerate(csv_data['name']):
+            try:
+                dataset[item] = {}
+                img_p = Image.open(os.path.join(DATA_DIR,item))
+                transform = transforms.Compose([transforms.ToTensor()])
+                dataset[item]['img'] = transform(img_p)
+                dataset[item]['box'] = []
+                for id in range(0,len(csv_data['labels'][idx])):
+                    dataset[item]['box'].append([value for value in csv_data['labels'][idx][id]['box2d'].values()])
+            except TypeError:
+                print('Label values are nan')
+
+
+
         return csv_data
 
     def generate_dict(self, dataset_Annotations, DATA_DIR):
         from PIL import Image
         from torchivison import transforms
         import glob
-        images = glob.glob(os.path.join(DATA_DIR, '*.jpg'))
-        for image in images:
+        for image in self.images:
             convert_tensor = transforms.ToTensor()
             images[os.path.basename(image)] = convert_tensor(img)
-            labels[os.path.basename(image)] =
+            #labels[os.path.basename(image)] =
+
+    def __len__(self):
+        return len(self.images)
 
 
-
+'''
 def train_epoch(dataloader, model, optimizer, criterion):
     train_loss = 0
     for X, y in dataloader:
@@ -49,8 +85,8 @@ def test_epoch(dataloader: DataLoader, model, criterion):
     for X, y in dataloader:
         X, y = X.to(device), y.to(device)
         with torch.no_grad():
-            y_ = ...
-            loss = ...
+            #y_ = ...
+            #loss = ...
             test_loss += loss.item() * len(y)
 
     return test_loss / len(dataloader.dataset)
@@ -88,4 +124,14 @@ def train():
                                          transforms.CenterCrop(224),
                                          transforms.ToTensor(),
                                          normalize, ])
+'''
+if __name__ == '__main__':
+    args = get_args()
+    jsons_p = args.json_path
+    imgs_p = args.imgs
+
+    data = SDDataLoader()
+    dict = data.annotations_to_csv(jsons_p,imgs_p)
+    print(dict)
+
 
