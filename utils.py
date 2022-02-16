@@ -9,9 +9,19 @@ num_objects = 80
 for i in range(num_objects):
     color.append('#%06X' % randint(0, 0xFFFFFF))
 
+
+def retrieve_box(predictions,num_classes,S=7,B=2):
+    predictions = predictions.reshape(-1, S, S,
+                                      num_classes + B * 5)
+    prediction_box = predictions[..., num_classes+1:num_classes+1+4]
+
+    return prediction_box
+
+
+
 class YoloLoss(nn.Module):
     def __init__(self, S=7, B=2,
-                 C=80):  # S is the number of gris in which we are going to divide (7x7), B is the quantity of boundig box per cell, C is the number of classes
+                 C=80):  # S is the number of grids in which we are going to divide (7x7), B is the quantity of boundig box per cell, C is the number of classes
         super(YoloLoss, self).__init__()
         self.mse = nn.MSELoss(reduction="sum")
         self.S = S
