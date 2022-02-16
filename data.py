@@ -1,3 +1,5 @@
+import pdb
+
 import torch
 from torchvision import transforms
 from os import listdir
@@ -81,15 +83,15 @@ class DataLoader():
         for i in range(len(self.img_files)):
             # Check if batch is full and perhaps start a new one
             if len(self.img_tensors) == self.batch_size:
-                self.data.append((torch.stack(self.img_tensors), 
-                                  torch.stack(self.target_tensors)))
+                self.data.append((torch.stack(self.img_tensors),
+                              torch.stack(self.target_tensors)))
                 self.img_tensors = []
                 self.target_tensors = []
                 print('Loaded batch ', len(self.data), 'of ', self.load_size)
                 print('Percentage Done: ', round(len(self.data)/self.load_size*100., 2), '%')
                 print('')
             
-            if len(self.data) == self.load_size: 
+            if len(self.data) == self.load_size:
                 break # The data list is full with the desired amount of batches
                 
             # Extracts a single random image and the corresponding label, and 
@@ -149,7 +151,11 @@ class DataLoader():
         for json_el in self.target_files:
             if json_el['name'] == chosen_image:
                 img_label = json_el
-                if img_label["labels"] is None: # Checks if a label exists for the given image
+                try:
+                    if img_label["labels"] is None: # Checks if a label exists for the given image
+                        break
+                except:
+                    print('No label for image')
                     break
                 target_tensor = self.transform_label_to_tensor(img_label)
                 return target_tensor
