@@ -1,4 +1,6 @@
 # Main file of the project
+import pdb
+import wandb
 import torch
 import os
 import numpy as np
@@ -26,33 +28,41 @@ def train(jsons_p,imgs_p):
     from torchsummary import summary
     import matplotlib.pyplot as plt
     from model.nn_model import YoloV1Model
-    from model.nn_model import YOLOv1
     from data import DataLoader
+    from utils import retrieve_box
+    import torchvision
+    from torchvision.utils import draw_bounding_boxes
 
     category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
                      "truck", "train", "other person", "bus", "car", "rider", "motorcycle",
                      "bicycle", "trailer"]
 
-    data = \
-        DataLoader(
-        img_files_path=imgs_p,
-        target_files_path=jsons_p,
-        category_list=category_list,
-        split_size=1,
-        batch_size=1,
-        load_size=1
-    )
 
     # Defining hyperparameters:
     hparams = {
-        'num_epochs': 5,
-        'batch_size': 100,
+        'num_epochs': 100,
+        'batch_size': 10,
         'channels': 3,
-        'learning_rate': 2e-5,
+        'learning_rate': 0.000001,
         'classes': len(category_list)
     }
     use_gpu = False
-    num_epochs=1
+
+    wandb.config = {
+        "learning_rate": 0.000001,
+        "epochs": 100,
+        "batch_size": 10
+    }
+
+    data = \
+        DataLoader(
+            img_files_path=imgs_p,
+            target_files_path=jsons_p,
+            category_list=category_list,
+            split_size=7, # Amount of grid cells
+            batch_size=hparams['batch_size'],
+            load_size=1000
+        )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=1)
 
@@ -60,11 +70,9 @@ def train(jsons_p,imgs_p):
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
     loss_fn = YoloLoss(C=hparams['classes'])
     train_loss_avg = []
-    model = model.to(device)
     yolo.train()
-    model.train()
 
-    for epoch in range(num_epochs):
+    for epoch in range(hparams['num_epochs']):
 
         print("DATA IS BEING LOADED FOR A NEW EPOCH")
         print("")
@@ -87,18 +95,20 @@ def train(jsons_p,imgs_p):
 
                 loss = loss_fn(prediction,target_data)
                 train_loss_avg.append(loss.item())
+                wandb.log({"loss": loss})
 
                 loss.backward()
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(
-                    epoch + 1, num_epochs, batch_idx + 1, len(data.data),
+                    epoch + 1, hparams["num_epochs"], batch_idx + 1, len(data.data),
                     (batch_idx + 1) / len(data.data) * 100., loss))
                 print('')
 
         time.sleep(10)
 
 if __name__ == '__main__':
+    wandb.init(project="SelfDriving-project", entity="helenamartin")
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs
