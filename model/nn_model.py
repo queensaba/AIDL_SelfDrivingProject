@@ -1,82 +1,143 @@
 import torch.nn as nn
-'''
-class SD_Model():
-    def __init__():
-        super().__init__()
-        self.conv1 = nn.Conv2d(3,64,3)
-        self.act1 = nn.ReLU()
-        self.conv2 = nn.Conv2d(64,64,3)
-        self.act2 = nn.ReLU()
+import torch
 
-        self.maxpool1 = nn.MaxPool2d(2)
 
-        self.conv3 = nn.Conv2d(64,128,3)
-        self.act3 = nn.ReLU()
-        self.conv4 = nn.Conv2d(128,128,3)
-        self.act4 = nn.ReLU()
+class YOLOv1(nn.Module):
+    """
+    This class contains the YOLOv1 model. It consists of 24 convolutional and
+    2 fully-connected layers which divide the input image into a
+    (split_size x split_size) grid and predict num_boxes bounding boxes per grid
+    cell.
+    """
 
-        self.maxpool2 = nn.MaxPool2d(2)
+    def __init__(self, split_size, num_boxes, num_classes):
+        """
+        Initializes the neural-net with the parameter values to produce the
+        desired predictions.
 
-        self.conv5 = nn.Conv2d(128,256,3)
-        self.act5 = nn.ReLU()
-        self.conv6 = nn.Conv2d(256,256,3)
-        self.act6 = nn.ReLU()
-        self.conv7 = nn.Conv2d(256,256,3)
-        self.act7 = nn.ReLU()
+        Parameters:
+            split_size (int): Size of the grid which is applied to the image.
+            num_boxes (int): Amount of bounding boxes which are predicted per
+            grid cell.
+            num_classes (int): Amount of different classes which are being
+            predicted by the model.
+        """
 
-        self.maxpool3 = nn.MaxPool2d(2)
+        super(YOLOv1, self).__init__()
+        self.split_size = split_size
+        self.num_boxes = num_boxes
+        self.num_classes = num_classes
+        self.darkNet = nn.Sequential(
+            nn.Conv2d(3, 64, 7, padding=3, stride=2, bias=False),  # 3,448,448 -> 64,224,224
+            nn.BatchNorm2d(64),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.MaxPool2d(2, 2),  # -> 64,112,112
 
-        self.conv8=nn.Conv2d(256,512,3)
-        self.act8 = nn.ReLU()
-        self.conv9= nn.Conv2d(512,512,3)
-        self.act9= nn.ReLU()
-        self.conv10 = nn.Conv2d(512,512,3)
-        self.act10 = nn.ReLU()
+            nn.Conv2d(64, 192, 3, padding=1, bias=False),  # -> 192,112,112
+            nn.BatchNorm2d(192),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.MaxPool2d(2, 2),  # -> 192,56,56
 
-        self.maxpool4 = nn.MaxPool2d(2)
+            nn.Conv2d(192, 128, 1, bias=False),  # -> 192,56,56
+            nn.BatchNorm2d(128),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(128, 256, 3, padding=1, bias=False),  # -> 256,56,56
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 256, 1, bias=False),  # -> 256,56,56
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 512, 3, padding=1, bias=False),  # -> 512,56,56
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.MaxPool2d(2, 2),  # -> 512,28,28
 
-        self.conv11 = nn.Conv2d(512,512,3)
-        self.act11 = nn.ReLU()
-        self.conv12 = nn.Conv2d(512, 512, 3)
-        self.act12 = nn.ReLU()
-        self.conv13 = nn.Conv2d(512,512,3)
-        self.act13 = nn.ReLU()
+            nn.Conv2d(512, 256, 1, bias=False),  # -> 256,28,28
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 512, 3, padding=1, bias=False),  # -> 512,28,28
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 256, 1, bias=False),  # -> 256,28,28
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 512, 3, padding=1, bias=False),  # -> 512,28,28
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 256, 1, bias=False),  # -> 256,28,28
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 512, 3, padding=1, bias=False),  # -> 512,28,28
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 256, 1, bias=False),  # -> 256,28,28
+            nn.BatchNorm2d(256),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(256, 512, 3, padding=1, bias=False),  # -> 512,28,28
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 512, 1, bias=False),  # -> 512,28,28
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 1024, 3, padding=1, bias=False),  # -> 1024,28,28
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.MaxPool2d(2, 2),  # -> 1024,14,14
 
-        self.maxpool5 = nn.MaxPool2d(2)
+            nn.Conv2d(1024, 512, 1, bias=False),  # -> 512,14,14
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(1024, 512, 1, bias=False),  # -> 512,14,14
+            nn.BatchNorm2d(512),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(512, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(1024, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(1024, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
 
-        self.linear1 = nn.Linear(25088,4096)
-        self.act14 = nn.ReLU()
-        self.linear2 = nn.Linear(4096,4096)
-        self.act15 = nn.ReLU()
-        self.linear3 = nn.Linear(4092,10)
+            nn.Conv2d(1024, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Conv2d(1024, 1024, 3, padding=1, bias=False),  # -> 1024,14,14
+            nn.BatchNorm2d(1024),
+            nn.LeakyReLU(0.1, inplace=True),
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(1024 * split_size * split_size, 4096),
+            nn.Dropout(0.5),
+            nn.LeakyReLU(0.1, inplace=True),
+            nn.Linear(4096, split_size * split_size * (num_classes + num_boxes * 5)),
+            nn.Sigmoid()
+        )
 
-    def forward(x):
-        x = self.act1(self.conv1(x))
-        x = self.act2(self.conv2(x))
-        x = self.maxpool1(x)
-        x = self.act3(self.conv3(x))
-        x = self.act4(self.conv4(x))
-        x = self.maxpool2(x)
-        x = self.act5(self.conv5(x))
-        x = self.act6(self.conv6(x))
-        x = self.act7(self.conv7(x))
-        x = self.maxpool3(x)
-        x = self.act8(self.conv8(x))
-        x = self.act9(self.conv9(x))
-        x = self.act10(self.conv10(x))
-        x = self.maxpool4(x)
-        x = self.act11(self.conv11(x))
-        x = self.act12(self.conv12(x))
-        x = self.act13(self.conv13(x))
-        x = self.maxpool5(x)
-        x = self.act14(self.linear1(x))
-        x = self.act15(self.linear2(x))
-        y = self.act16(self.linear3(x))
-        return y'''
+    def forward(self, x):
+        """
+        Forwards the input tensor through the model to produce the predictions.
 
-import torch.nn as nn
-import torch.nn.functional as F
+        Parameters:
+            x (tensor): A tensor of shape (batch_size, 3, 448, 448) which represents
+            a batch of input images.
 
+        Returns:
+            x (tensor): A tensor of shape
+            (batch_size, split_size, split_size, num_boxes*5 + num_classes)
+            which contains the predicted bounding boxes.
+        """
+
+        x = self.darkNet(x)
+        x = torch.flatten(x, start_dim=1)
+        x = self.fc(x)
+        x = x.view(x.shape[0], self.split_size, self.split_size,
+                   self.num_boxes * 5 + self.num_classes)
+        return x
 
 class YoloV1Model(nn.Module):
     def __init__(self, channels=3, classes=80, bb=2, s=7):
@@ -184,115 +245,6 @@ class YoloV1Model(nn.Module):
         out = self.fc2(self.leakyrelu(self.dropout(self.fc1(out7))))
         # out = self.fc2(self.fc1(out7))
         return out
-
-
-class YoloLoss(nn.Module):
-    def __init__(self, S=7, B=2,
-                 C=80):  # S is the number of gris in which we are going to divide (7x7), B is the quantity of boundig box per cell, C is the number of classes
-        super(YoloLoss, self).__init__()
-        self.mse = nn.MSELoss(reduction="sum")
-        self.S = S
-        self.B = B
-        self.C = C
-        self.lambda_noobj = 0.5
-        self.lambda_coord = 5
-
-    def forward(self, predictions, target):
-        predictions = predictions.reshape(-1, self.S, self.S,
-                                          self.C + self.B * 5)  # Make sure that the shape is (-1,7,7,80+10) = (-1,7,7,90)
-        iou_b1 = intersection_over_union(predictions[..., 81:85], target[...,
-                                                                  81:85])  # From 0 to 79 is for class probabilities, 80 i for class score
-        iou_b2 = intersection_over_union(predictions[..., 86:90], target[..., 81:85])
-        ious = torch.cat([iou_b1.unsqueeze(0), iou_b2.unsqueeze(0)], dim=0)
-        iou_maxes, bestbox = torch.max(ious, dim=0)
-        exists_box = target[..., 80].unsqueeze(3)
-        # ======================== #
-        #   FOR BOX COORDINATES    #
-        # ======================== #
-
-        # Set boxes with no object in them to 0. We only take out one of the two
-        # predictions, which is the one with highest Iou calculated previously.
-        box_predictions = exists_box * (
-            (
-                    bestbox * predictions[..., 86:90]
-                    + (1 - bestbox) * predictions[..., 81:85]
-            )
-        )
-
-        box_targets = exists_box * target[..., 81:85]
-
-        # Take sqrt of width, height of boxes to ensure that
-        box_predictions[..., 2:4] = torch.sign(box_predictions[..., 2:4]) * torch.sqrt(
-            torch.abs(box_predictions[..., 2:4] + 1e-6)
-        )
-        box_targets[..., 2:4] = torch.sqrt(box_targets[..., 2:4])
-
-        box_loss = self.mse(
-            torch.flatten(box_predictions, end_dim=-2),
-            torch.flatten(box_targets, end_dim=-2),
-        )
-        print("box_loss is:")
-        print(box_loss)
-
-        # ==================== #
-        #   FOR OBJECT LOSS    #
-        # ==================== #
-
-        # pred_box is the confidence score for the bbox with highest IoU
-        pred_box = (
-                bestbox * predictions[..., 85:86] + (1 - bestbox) * predictions[..., 80:81]
-        )
-
-        object_loss = self.mse(
-            torch.flatten(exists_box * pred_box),
-            torch.flatten(exists_box * target[..., 80:81]),
-        )
-        print("object loss is")
-        print(object_loss)
-
-        # ======================= #
-        #   FOR NO OBJECT LOSS    #
-        # ======================= #
-
-        # max_no_obj = torch.max(predictions[..., 20:21], predictions[..., 25:26])
-        # no_object_loss = self.mse(
-        #    torch.flatten((1 - exists_box) * max_no_obj, start_dim=1),
-        #    torch.flatten((1 - exists_box) * target[..., 20:21], start_dim=1),
-        # )
-
-        no_object_loss = self.mse(
-            torch.flatten((1 - exists_box) * predictions[..., 80:81], start_dim=1),
-            torch.flatten((1 - exists_box) * target[..., 80:81], start_dim=1),
-        )
-
-        no_object_loss += self.mse(
-            torch.flatten((1 - exists_box) * predictions[..., 85:86], start_dim=1),
-            torch.flatten((1 - exists_box) * target[..., 80:81], start_dim=1)
-        )
-        print("no object loss is")
-        print(no_object_loss)
-
-        # ================== #
-        #   FOR CLASS LOSS   #
-        # ================== #
-
-        class_loss = self.mse(
-            torch.flatten(exists_box * predictions[..., :80], end_dim=-2, ),
-            torch.flatten(exists_box * target[..., :80], end_dim=-2, ),
-        )
-        print("class_loss")
-        print(class_loss)
-
-        loss = (
-                self.lambda_coord * box_loss  # first two rows in paper
-                + object_loss  # third row in paper
-                + self.lambda_noobj * no_object_loss  # forth row
-                + class_loss  # fifth row
-        )
-        print("final loss is:")
-        print(loss)
-
-        return loss
 
 
 
