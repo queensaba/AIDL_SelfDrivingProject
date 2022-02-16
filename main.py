@@ -7,7 +7,7 @@ import argparse as ap
 from torchvision.transforms.functional import to_tensor, to_pil_image
 from torch.utils.data import Dataset
 import glob
-from utils import YOLO_Loss
+from utils import YoloLoss
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
@@ -127,7 +127,7 @@ def train(jsons_p,imgs_p):
     from torchsummary import summary
     import matplotlib.pyplot as plt
     from model.nn_model import YoloV1Model
-    from model.nn_model import YoloLoss
+    from model.nn_model import YOLOv1
     from data import DataLoader
 
     category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
@@ -143,8 +143,8 @@ def train(jsons_p,imgs_p):
         img_files_path=imgs_p,
         target_files_path=jsons_p,
         category_list=category_list,
-        split_size=8,
-        batch_size=100,
+        split_size=1,
+        batch_size=1,
         load_size=1
     )
 
@@ -153,18 +153,23 @@ def train(jsons_p,imgs_p):
         'num_epochs': 5,
         'batch_size': 100,
         'channels': 3,
-        'learning_rate': 2e-5
+        'learning_rate': 2e-5,
+        'classes': len(category_list)
     }
     use_gpu = False
     num_epochs=1
-    yolo = YoloV1Model(hparams['channels'])
+    yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
+    model = YOLOv1(split_size, num_boxes, num_classes)
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=1)
 
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
-    loss_fn = YoloLoss()
+    loss_fn = YoloLoss(C=hparams['classes'])
     train_loss_avg = []
+    model = model.to(device)
     yolo.train()
+    model.train()
+
     for epoch in range(num_epochs):
 
         print("DATA IS BEING LOADED FOR A NEW EPOCH")
@@ -184,11 +189,16 @@ def train(jsons_p,imgs_p):
 
                 optimizer.zero_grad()
 
-                predictions = yolo(img_data)
-                yolo_loss = YOLO_Loss(predictions, target_data, split_size, num_boxes,
-                                      num_classes, lambda_coord, lambda_noobj)
-                yolo_loss.loss()
-                loss = yolo_loss.final_loss
+                prediction = yolo(img_data)
+                #predictions = model(img_data)
+
+                loss = loss_fn(prediction,target_data)
+                train_loss_avg.append(loss.item())
+                #yolo_loss = YOLO_Loss(predictions, target_data, split_size, num_boxes,
+                                      #num_classes, lambda_coord, lambda_noobj)
+
+                #yolo_loss.loss()
+                #loss = yolo_loss.final_loss
 
                 loss.backward()
                 optimizer.step()
