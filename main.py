@@ -1,5 +1,4 @@
 # Main file of the project
-
 import torch
 import os
 import numpy as np
@@ -9,41 +8,6 @@ from torch.utils.data import Dataset
 import glob
 from utils import YoloLoss
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
-                 "truck", "train", "other person", "bus", "car", "rider",
-                 "motorcycle", "bicycle", "trailer"]
-category_color = [(255,255,0),(255,0,0),(255,128,0),(0,255,255),(255,0,255),
-                  (128,255,0),(0,255,128),(255,0,127),(0,255,0),(0,0,255),
-                  (127,0,255),(0,128,255),(128,128,128)]
-
-
-def parse_json_files():
-    """
-    Store images and labels into arrays
-    :return:
-    """
-    import pandas as pd
-    from PIL import Image
-    from torchvision import transforms
-    csv_data = pd.read_json(json_path)
-    convert_tensor = transforms.ToTensor()
-    dataset={}
-    for idx, item in enumerate(csv_data['name']):
-        if os.path.isfile(os.path.join(DATA_DIR, item)):
-            dataset[item] = {}
-            img_p = Image.open(os.path.join(DATA_DIR, item))
-            transform = transforms.Compose([transforms.ToTensor()])
-            dataset[item]['img'] = transform(img_p)
-            dataset[item]['box'] = []
-            try:
-                for id in range(0, len(csv_data['labels'][idx])):
-                    dataset[item]['box'].append([value for value in csv_data['labels'][idx][id]['box2d'].values()])
-            except TypeError:
-                print('Label values are nan')
-        else:
-            continue
-    return dataset
 
 def get_args():
     parser = ap.ArgumentParser()
@@ -55,71 +19,6 @@ def get_args():
     return args
 
 
-class SDDataLoader():
-    """
-    Self Driving Prokect Dataset.
-    """
-    def __init__(self):
-
-        #self.img_paths = glob.glob(os.path.join(DATA_DIR, '*.jpg'))
-        #self.dataset_annotations = self.annotations_to_csv(json_path)
-        #self.dataset = self.generate_dict(self.dataset_annotations, DATA_DIR)
-        #self.train,self.val = self.split_dataset(self.dataset_annotations)
-        self.labels = self.json_to_list(jsons_p)
-        self.images = self.images_to_
-
-    def __getitem__(self, idx):
-        selected_image = self.images[idx]
-        selected_labels = self.labels[idx]
-        image_pil = PIL.Image.open(os.path.join(self.images_path,selected_image)).convert('RGB')
-        image = self.to_tensor_and_normalize(image_pil)
-
-
-
-    def json_to_list(self,jsons_p):
-        import pandas as pd
-        dataset = pd.read_json(jsons_p)
-        labels = dataset['labels'].tolist()
-        return labels
-
-
-    def annotations_to_csv(self, json_path, DATA_DIR):
-        dataset = {}
-        import pandas as pd
-        from PIL import Image
-        from torchvision import transforms
-        csv_data = pd.read_json(json_path)
-        import pdb
-        pdb.set_trace()
-        convert_tensor = transforms.ToTensor()
-
-        for idx,item in enumerate(csv_data['name']):
-            if os.path.isfile(os.path.join(DATA_DIR,item)):
-                dataset[item] = {}
-                img_p = Image.open(os.path.join(DATA_DIR,item))
-                transform = transforms.Compose([transforms.ToTensor()])
-                dataset[item]['img'] = transform(img_p)
-                dataset[item]['box'] = []
-                try:
-                    for id in range(0,len(csv_data['labels'][idx])):
-                        dataset[item]['box'].append([value for value in csv_data['labels'][idx][id]['box2d'].values()])
-                except TypeError:
-                    print('Label values are nan')
-            else:
-                continue
-        return dataset
-
-    def generate_dict(self, dataset_Annotations, DATA_DIR):
-        from PIL import Image
-        from torchivison import transforms
-        import glob
-        for image in self.images:
-            convert_tensor = transforms.ToTensor()
-            images[os.path.basename(image)] = convert_tensor(img)
-            #labels[os.path.basename(image)] =
-
-    def __len__(self):
-        return len(self.images)
 
 def train(jsons_p,imgs_p):
     # Training yolo v1
@@ -133,11 +32,7 @@ def train(jsons_p,imgs_p):
     category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
                      "truck", "train", "other person", "bus", "car", "rider", "motorcycle",
                      "bicycle", "trailer"]
-    split_size = 5
-    num_boxes = 2
-    num_classes = len(category_list)
-    lambda_coord = 5
-    lambda_noobj = 0.5
+
     data = \
         DataLoader(
         img_files_path=imgs_p,
@@ -159,7 +54,6 @@ def train(jsons_p,imgs_p):
     use_gpu = False
     num_epochs=1
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
-    model = YOLOv1(split_size, num_boxes, num_classes)
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=1)
 
     # Move model to the GPU
@@ -190,15 +84,9 @@ def train(jsons_p,imgs_p):
                 optimizer.zero_grad()
 
                 prediction = yolo(img_data)
-                #predictions = model(img_data)
 
                 loss = loss_fn(prediction,target_data)
                 train_loss_avg.append(loss.item())
-                #yolo_loss = YOLO_Loss(predictions, target_data, split_size, num_boxes,
-                                      #num_classes, lambda_coord, lambda_noobj)
-
-                #yolo_loss.loss()
-                #loss = yolo_loss.final_loss
 
                 loss.backward()
                 optimizer.step()
