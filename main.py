@@ -41,7 +41,7 @@ def train(jsons_p,imgs_p):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 5,
+        'batch_size': 10,
         'channels': 3,
         'learning_rate': 0.001,
         'classes': len(category_list)
