@@ -51,7 +51,7 @@ def train(jsons_p,imgs_p):
     wandb.config = {
         "learning_rate": 0.001,
         "epochs": 20,
-        "batch_size": 100
+        "batch_size": 30
     }
 
     data = \
