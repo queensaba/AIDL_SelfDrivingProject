@@ -40,10 +40,10 @@ def train(jsons_p,imgs_p):
 
     # Defining hyperparameters:
     hparams = {
-        'num_epochs': 70,
+        'num_epochs': 100,
         'batch_size': 10,
         'channels': 3,
-        'learning_rate': 0.001,
+        'learning_rate': 0.0001,
         'classes': len(category_list)
     }
     use_gpu = False
