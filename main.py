@@ -40,8 +40,8 @@ def train(jsons_p,imgs_p):
 
     # Defining hyperparameters:
     hparams = {
-        'num_epochs': 20,
-        'batch_size': 100,
+        'num_epochs': 70,
+        'batch_size': 10,
         'channels': 3,
         'learning_rate': 0.001,
         'classes': len(category_list)
@@ -51,7 +51,7 @@ def train(jsons_p,imgs_p):
     wandb.config = {
         "learning_rate": 0.001,
         "epochs": 20,
-        "batch_size": 30
+        "batch_size": 10
     }
 
     data = \
