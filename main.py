@@ -41,9 +41,9 @@ def train(jsons_p,imgs_p):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 10,
+        'batch_size': 5,
         'channels': 3,
-        'learning_rate': 0.000001,
+        'learning_rate': 0.0001,
         'classes': len(category_list)
     }
     use_gpu = False
@@ -84,7 +84,7 @@ def train(jsons_p,imgs_p):
             print("Remaining files:" + str(len(data.img_files)))
             print("")
             data.LoadData()  # Loads new batches
-
+            pdb.set_trace()
             for batch_idx, (img_data, target_data) in enumerate(data.data):
                 img_data = img_data.to(device)
                 target_data = target_data.to(device)
