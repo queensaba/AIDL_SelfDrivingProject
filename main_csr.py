@@ -41,7 +41,7 @@ def train(jsons_p,imgs_p):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 5,
+        'batch_size': 10,
         'channels': 3,
         'learning_rate': 0.001,
         'classes': len(category_list)
@@ -84,7 +84,7 @@ def train(jsons_p,imgs_p):
             print("Remaining files:" + str(len(data.img_files)))
             print("")
             data.LoadData()  # Loads new batches
-            pdb.set_trace()
+
             for batch_idx, (img_data, target_data) in enumerate(data.data):
                 img_data = img_data.to(device)
                 target_data = target_data.to(device)
@@ -108,7 +108,7 @@ def train(jsons_p,imgs_p):
         time.sleep(10)
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project", entity="helenamartin")
+    wandb.init(project="SelfDriving-project", entity="ceciliasr")
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs

@@ -1,4 +1,3 @@
-import cv2 as cv
 from random import randint
 import matplotlib.pyplot as plt
 import torch
