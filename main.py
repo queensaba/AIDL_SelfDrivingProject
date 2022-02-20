@@ -49,7 +49,7 @@ def train(jsons_p,imgs_p):
     use_gpu = False
 
     wandb.config = {
-        "learning_rate": 0.001,
+        "learning_rate": 0.0001,
         "epochs": 20,
         "batch_size": 10
     }
@@ -61,7 +61,7 @@ def train(jsons_p,imgs_p):
             category_list=category_list,
             split_size=7, # Amount of grid cells
             batch_size=hparams['batch_size'],
-            load_size=500
+            load_size=1000
         )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=1)
