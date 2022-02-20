@@ -84,7 +84,6 @@ def train(jsons_p,imgs_p):
             print("Remaining files:" + str(len(data.img_files)))
             print("")
             data.LoadData()  # Loads new batches
-            pdb.set_trace()
             for batch_idx, (img_data, target_data) in enumerate(data.data):
                 img_data = img_data.to(device)
                 target_data = target_data.to(device)
