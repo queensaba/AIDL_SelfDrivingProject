@@ -61,7 +61,7 @@ def train(jsons_p,imgs_p):
             category_list=category_list,
             split_size=7, # Amount of grid cells
             batch_size=hparams['batch_size'],
-            load_size=1000
+            load_size=100
         )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=1)
