@@ -3,6 +3,7 @@ from random import randint
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
+import wandb
 
 color = []
 num_objects = 80
@@ -67,6 +68,7 @@ class YoloLoss(nn.Module):
         )
         print("box_loss is:")
         print(box_loss)
+        wandb.log({"box loss": box_loss})
 
         # ==================== #
         #   FOR OBJECT LOSS    #
@@ -83,6 +85,7 @@ class YoloLoss(nn.Module):
         )
         print("object loss is")
         print(object_loss)
+        wandb.log({"object loss": object_loss})
 
         # ======================= #
         #   FOR NO OBJECT LOSS    #
@@ -105,6 +108,7 @@ class YoloLoss(nn.Module):
         )
         print("no object loss is")
         print(no_object_loss)
+        wandb.log({"no object loss": no_object_loss})
 
         # ================== #
         #   FOR CLASS LOSS   #
@@ -116,6 +120,7 @@ class YoloLoss(nn.Module):
         )
         print("class_loss")
         print(class_loss)
+        wandb.log({"class loss": class_loss})
 
         loss = (
                 self.lambda_coord * box_loss  # first two rows in paper
