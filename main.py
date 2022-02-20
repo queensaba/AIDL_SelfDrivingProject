@@ -103,6 +103,9 @@ def train(jsons_p,imgs_p):
                     epoch + 1, hparams["num_epochs"], batch_idx + 1, len(data.data),
                     (batch_idx + 1) / len(data.data) * 100., loss))
                 print('')
+                print("=> Saving checkpoint")
+                print("")
+                torch.save(state, 'YOLO_bdd100k.pt')
 
         time.sleep(10)
 
