@@ -105,7 +105,11 @@ def train(jsons_p,imgs_p):
                 print('')
                 print("=> Saving checkpoint")
                 print("")
-                torch.save(state, 'YOLO_bdd100k.pt')
+                checkpoint = {
+                    "state_dict": yolo.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                }
+                torch.save(checkpoint, 'YOLO_bdd100k.pt')
 
         time.sleep(10)
 
