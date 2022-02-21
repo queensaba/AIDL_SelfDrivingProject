@@ -85,11 +85,9 @@ def train(jsons_p,imgs_p):
             print("")
             data.LoadData()  # Loads new batches
             for batch_idx, (img_data, target_data) in enumerate(data.data):
+                optimizer.zero_grad()
                 img_data = img_data.to(device)
                 target_data = target_data.to(device)
-
-                optimizer.zero_grad()
-
                 prediction = yolo(img_data)
 
                 loss = loss_fn(prediction,target_data)
@@ -97,6 +95,7 @@ def train(jsons_p,imgs_p):
                 wandb.log({"loss": loss})
 
                 loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(
