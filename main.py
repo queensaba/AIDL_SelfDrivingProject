@@ -43,13 +43,13 @@ def train(jsons_p,imgs_p):
         'num_epochs': 1000,
         'batch_size': 16,
         'channels': 3,
-        'learning_rate': 0.001,
+        'learning_rate': 0.0001,
         'classes': len(category_list)
     }
     use_gpu = False
 
     wandb.config = {
-        "learning_rate": 0.001,
+        "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 16
     }
