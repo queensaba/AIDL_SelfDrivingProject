@@ -220,3 +220,4 @@ class DataLoader():
             target_tensor[cell_pos_y][cell_pos_x][ctg_idx+5] = 1
 
         return target_tensor
+
