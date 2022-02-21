@@ -95,7 +95,7 @@ def train(jsons_p,imgs_p):
                 wandb.log({"loss": loss})
 
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
+                torch.nn.utils.clip_grad_norm_(yolo.parameters(), 10.0)
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(
