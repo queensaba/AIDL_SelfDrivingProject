@@ -41,17 +41,18 @@ def train(jsons_p,imgs_p):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 5,
+        'batch_size': 10,
         'channels': 3,
-        'learning_rate': 0.0001,
-        'classes': len(category_list)
+        'learning_rate': 0.001,
+        'classes': len(category_list),
+        'nsamples': 25000,
     }
     use_gpu = False
 
     wandb.config = {
-        "learning_rate": 0.0001,
+        "learning_rate": 0.001,
         "epochs": 100,
-        "batch_size": 5
+        "batch_size": 10
     }
 
     data = \
@@ -61,7 +62,7 @@ def train(jsons_p,imgs_p):
             category_list=category_list,
             split_size=7, # Amount of grid cells
             batch_size=hparams['batch_size'],
-            load_size=5
+            load_size=25000
         )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
@@ -84,7 +85,10 @@ def train(jsons_p,imgs_p):
             print("Remaining files:" + str(len(data.img_files)))
             print("")
             data.LoadData()  # Loads new batches
+
             for batch_idx, (img_data, target_data) in enumerate(data.data):
+                if batch_idx > hparams['nsamples']:
+                    break
                 optimizer.zero_grad()
                 img_data = img_data.to(device)
                 target_data = target_data.to(device)
@@ -109,8 +113,6 @@ def train(jsons_p,imgs_p):
                     "optimizer": optimizer.state_dict(),
                 }
                 torch.save(checkpoint, 'YOLO_bdd100k.pt')
-
-        time.sleep(10)
 
 if __name__ == '__main__':
     wandb.init(project="SelfDriving-project", entity="helenamartin")
