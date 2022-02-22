@@ -60,7 +60,7 @@ def train(jsons_p,imgs_p):
             img_files_path=imgs_p,
             target_files_path=jsons_p,
             category_list=category_list,
-            split_size=7, # Amount of grid cells
+            split_size=14, # Amount of grid cells
             batch_size=hparams['batch_size'],
             load_size=1
         )
@@ -99,7 +99,7 @@ def train(jsons_p,imgs_p):
                 wandb.log({"loss": loss})
 
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(yolo.parameters(), 10.0)
+                torch.nn.utils.clip_grad_norm_(yolo.parameters(), 100.0)
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(

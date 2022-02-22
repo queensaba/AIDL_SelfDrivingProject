@@ -20,7 +20,7 @@ def retrieve_box(predictions,num_classes,S=7,B=2):
 
 
 class YoloLoss(nn.Module):
-    def __init__(self, S=7, B=2,
+    def __init__(self, S=14, B=2,
                  C=80):  # S is the number of grids in which we are going to divide (7x7), B is the quantity of boundig box per cell, C is the number of classes
         super(YoloLoss, self).__init__()
         self.mse = nn.MSELoss(reduction="sum")
