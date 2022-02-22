@@ -47,7 +47,7 @@ def train(jsons_p,imgs_p):
         'classes': len(category_list),
         'nsamples': 25000,
     }
-    use_gpu = False
+    use_gpu = True
 
     wandb.config = {
         "learning_rate": 0.001,
