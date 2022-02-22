@@ -69,7 +69,8 @@ def train(jsons_p,imgs_p):
 
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
-    loss_fn = YoloLoss(C=hparams['classes'])
+    print(device)
+    loss_fn = YoloLoss(C=hparams['classes'], S=14)
     train_loss_avg = []
     yolo.train()
 
