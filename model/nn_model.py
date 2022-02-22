@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 class YoloV1Model(nn.Module):
-    def __init__(self, channels=3, classes=80, bb=2, s=7):
+    def __init__(self, channels=3, classes=80, bb=2, s=14):
         super(YoloV1Model, self).__init__()
         self.c = channels
         self.S = s
@@ -82,7 +82,7 @@ class YoloV1Model(nn.Module):
 
         # Resolution is bumped to 448x448
 
-        self.leakyrelu = nn.LeakyReLU(0.1)  # Leaky RELU Activation
+        self.leakyrelu = nn.LeakyReLU(0.1, inplace=True)  # Leaky RELU Activation
 
     def forward(self, x):
         out1 = self.maxpool1(self.leakyrelu(self.batchnorm1(self.conv1(x))))  # conv1
