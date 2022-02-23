@@ -106,11 +106,7 @@ def train(jsons_p,imgs_p):
                 print('')
                 print("=> Saving checkpoint")
                 print("")
-                checkpoint = {
-                    "state_dict": yolo.state_dict(),
-                    "optimizer": optimizer.state_dict(),
-                }
-                torch.save(checkpoint, 'YOLO_bdd100k.pt')
+                torch.save(yolo, 'YOLO_bdd100k.pt')
 
 if __name__ == '__main__':
     wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
