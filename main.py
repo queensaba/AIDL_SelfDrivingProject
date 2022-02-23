@@ -56,20 +56,13 @@ def train(jsons_p,imgs_p, load_model, load_model_file):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 10,
+        'batch_size': 64,
         'channels': 3,
-        'learning_rate': 0.001,
+        'learning_rate': 0.0001,
         'classes': len(category_list),
         'nsamples': 25000,
     }
     use_gpu = True
-
-    wandb.config = {
-        "learning_rate": 0.001,
-        "epochs": 100,
-        "batch_size": 10
-    }
-
     data = \
         DataLoader(
             img_files_path=imgs_p,
@@ -80,10 +73,10 @@ def train(jsons_p,imgs_p, load_model, load_model_file):
             load_size=1
         )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
-    optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
-
-
-
+    #optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
+    # Test Adam optimizer to enhance convergence
+    optimizer = torch.optim.Adam(params=yolo.parameters(), lr=hparams['learning_rate'], weight_decay=0.0005)
+    
 
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
@@ -136,7 +129,12 @@ def train(jsons_p,imgs_p, load_model, load_model_file):
                 torch.save(checkpoint, 'YOLO_bdd100k.pt')
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project", entity="helenamartin")
+    wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
+        "learning_rate": 0.0001,
+        "epochs": 100,
+        "batch_size": 64,
+        "optim": 'SGD'
+    })
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs
