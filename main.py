@@ -52,11 +52,11 @@ def train(jsons_p,imgs_p):
     wandb.log({"batch_size": hparams["batch_size"]})
     wandb.log({"learning_rate": hparams["learning_rate"]})                                
 
-    wandb.config = {
+    wandb.init(config = {
         "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 64
-    }
+    })
 
     data = \
         DataLoader(
