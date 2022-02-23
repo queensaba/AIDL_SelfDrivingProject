@@ -48,16 +48,6 @@ def train(jsons_p,imgs_p):
         'nsamples': 25000,
     }
     use_gpu = True
-    wandb.log({"num_epochs": hparams["num_epochs"]})
-    wandb.log({"batch_size": hparams["batch_size"]})
-    wandb.log({"learning_rate": hparams["learning_rate"]})                                
-
-    wandb.init(config = {
-        "learning_rate": 0.0001,
-        "epochs": 100,
-        "batch_size": 64
-    })
-
     data = \
         DataLoader(
             img_files_path=imgs_p,
@@ -121,7 +111,12 @@ def train(jsons_p,imgs_p):
                 torch.save(checkpoint, 'YOLO_bdd100k.pt')
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project", entity="helenamartin")
+    wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
+        "learning_rate": 0.0001,
+        "epochs": 100,
+        "batch_size": 64,
+        "optim": 'SGD'
+    })
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs
