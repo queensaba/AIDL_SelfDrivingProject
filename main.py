@@ -106,7 +106,7 @@ def train(jsons_p,imgs_p):
                 print('')
                 print("=> Saving checkpoint")
                 print("")
-                torch.save(yolo, 'YOLO_bdd100k.pt')
+                torch.save(yolo, '/home/shared/AIDL_SelfDrivingProject')
 
 if __name__ == '__main__':
     wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
