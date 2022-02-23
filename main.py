@@ -68,8 +68,10 @@ def train(jsons_p,imgs_p):
             load_size=1
         )
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
-    optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
-
+    #optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
+    # Test Adam optimizer to enhance convergence
+    optimizer = torch.optim.Adam(params=yolo.parameters(), lr=hparams['learning_rate'], weight_decay=0.0005)
+    
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
     print(device)
