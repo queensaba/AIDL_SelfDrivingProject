@@ -17,7 +17,6 @@ def get_args():
                         help="Path to folder with JSON data.")
     parser.add_argument("-i", "--imgs", type=str, required=True,
                        help="Path to folder with images.")
-    parser.add_argument("-l", "--load_model", type=bool, required=True)
     args = parser.parse_args()
     return args
 
