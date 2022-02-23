@@ -84,7 +84,7 @@ def train(jsons_p,imgs_p, load_model, load_model_file):
     loss_fn = YoloLoss(C=hparams['classes'], S=14)
     train_loss_avg = []
     if load_model:
-        load_checkpoint(torch.load(load_model_file), model, optimizer)
+        load_checkpoint(torch.load(load_model_file), yolo, optimizer)
     yolo.train()
 
     for epoch in range(hparams['num_epochs']):
