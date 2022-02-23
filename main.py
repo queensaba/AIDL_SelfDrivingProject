@@ -22,22 +22,8 @@ def get_args():
     return args
 
 
-def load_checkpoint(checkpoint, model, optimizer):
-    """
-    Loads the model weights and optimizer state (the checkpoint).
 
-    Parameters:
-        checkpoint (string): The file from which the checkpoint is being loaded.
-        model (): The model which is being overwritten by the checkpoint.
-        optimizer (): The optimizer which is being overwritten by the checkpoint.
-    """
-    print("=> Loading checkpoint")
-    print("")
-    model.load_state_dict(checkpoint["state_dict"])
-    optimizer.load_state_dict(checkpoint["optimizer"])
-
-
-def train(jsons_p,imgs_p, load_model, load_model_file):
+def train(jsons_p,imgs_p):
     # Training yolo v1
     import torch
     from torchsummary import summary
@@ -83,8 +69,6 @@ def train(jsons_p,imgs_p, load_model, load_model_file):
     print(device)
     loss_fn = YoloLoss(C=hparams['classes'], S=14)
     train_loss_avg = []
-    if load_model:
-        load_checkpoint(torch.load(load_model_file), yolo, optimizer)
     yolo.train()
 
     for epoch in range(hparams['num_epochs']):
@@ -133,10 +117,9 @@ if __name__ == '__main__':
         "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 64,
-        "optim": 'SGD'
+        "optim": 'Adam'
     })
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs
-    load_model = args.load_model
-    train(jsons_p,imgs_p, load_model,'YOLO_bdd100k.pt')
+    train(jsons_p,imgs_p)
