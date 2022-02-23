@@ -41,18 +41,21 @@ def train(jsons_p,imgs_p):
     # Defining hyperparameters:
     hparams = {
         'num_epochs': 100,
-        'batch_size': 10,
+        'batch_size': 64,
         'channels': 3,
-        'learning_rate': 0.001,
+        'learning_rate': 0.0001,
         'classes': len(category_list),
         'nsamples': 25000,
     }
     use_gpu = True
+    wandb.log({"num_epochs": hparams["num_epochs"]})
+    wandb.log({"batch_size": hparams["batch_size"]})
+    wandb.log({"learning_rate": hparams["learning_rate"]})                                
 
     wandb.config = {
-        "learning_rate": 0.001,
+        "learning_rate": 0.0001,
         "epochs": 100,
-        "batch_size": 10
+        "batch_size": 64
     }
 
     data = \
@@ -100,7 +103,7 @@ def train(jsons_p,imgs_p):
                 wandb.log({"loss": loss})
 
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(yolo.parameters(), 100.0)
+                #torch.nn.utils.clip_grad_norm_(yolo.parameters(), 100.0)
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(
