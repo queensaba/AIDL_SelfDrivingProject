@@ -17,12 +17,27 @@ def get_args():
                         help="Path to folder with JSON data.")
     parser.add_argument("-i", "--imgs", type=str, required=True,
                        help="Path to folder with images.")
+    parser.add_argument("-l", "--load_model", type=bool, required=True)
     args = parser.parse_args()
     return args
 
 
+def load_checkpoint(checkpoint, model, optimizer):
+    """
+    Loads the model weights and optimizer state (the checkpoint).
 
-def train(jsons_p,imgs_p):
+    Parameters:
+        checkpoint (string): The file from which the checkpoint is being loaded.
+        model (): The model which is being overwritten by the checkpoint.
+        optimizer (): The optimizer which is being overwritten by the checkpoint.
+    """
+    print("=> Loading checkpoint")
+    print("")
+    model.load_state_dict(checkpoint["state_dict"])
+    optimizer.load_state_dict(checkpoint["optimizer"])
+
+
+def train(jsons_p,imgs_p, load_model, load_model_file):
     # Training yolo v1
     import torch
     from torchsummary import summary
@@ -67,11 +82,16 @@ def train(jsons_p,imgs_p):
     yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
     optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
 
+
+
+
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
     print(device)
     loss_fn = YoloLoss(C=hparams['classes'], S=14)
     train_loss_avg = []
+    if load_model:
+        load_checkpoint(torch.load(load_model_file), model, optimizer)
     yolo.train()
 
     for epoch in range(hparams['num_epochs']):
@@ -120,6 +140,5 @@ if __name__ == '__main__':
     args = get_args()
     jsons_p = args.json_path
     imgs_p = args.imgs
-    train(jsons_p,imgs_p)
-
-
+    load_model = args.load_model
+    train(jsons_p,imgs_p, load_model,'YOLO_bdd100k.pt')
