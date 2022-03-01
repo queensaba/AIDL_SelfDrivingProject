@@ -142,7 +142,7 @@ On the case of RetinaNet, we do not have to specify the backbone (as the only av
 In order to do inference with the "retrained" models, we can use the *inference....py* scripts as follows:
 
 ```
-python inference_FasterRCNN_resnet50.py -i "c:/Users/NNSiliatMa/Downloads/AIDL_SelfDrivingProject/transfer_learning/data/DeepDriving/test/fd5bae34-d63db3d7.jpg"
+python inference_FasterRCNN_resnet50.py -i "data/DeepDriving/test/fd5bae34-d63db3d7.jpg"
 ```
 
 
