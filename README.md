@@ -172,4 +172,19 @@ So, we can see that it has worked pretty well. In general, we have seen the best
 
 ## 7. Conclusion and future work
 
+**In our project we implemented and trained a one stage detector YOLO and two stage detector Faster R-CNN on the BDD 100K dataset in the context of of autonomous vehicles. 
+
+**The main result: we just explore one of the main critical tasks, namely object detection. 
+
+**Since we used the first version of YOLO in this project, in the future we must experiment with newer models, for instance the most recent  versions of YOLO ,
+
+**In the Future we will need to explore these three tasks simultaneously. We may add a four critical task: deep detection. This would allow us to reach performance with high accuracy and high FPS which are suitable for the goal of autonomous driving .
+
+**Since autonomous vehicles take decisions involving matters of life and death, we will have to find new ways to train the autonomous vehicle to make these complex decisions
+
+**Generally we would need higher precision and real-time driving perception system that can assist the autonomous vehicle in making the reasonable decision while driving safely
+
+
+
+
 
