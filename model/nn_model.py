@@ -213,7 +213,7 @@ class YoloV1Model(nn.Module):
             nn.Linear(1024 * self.grid_size * self.grid_size, 4096),
             nn.Dropout(0.5),
             nn.LeakyReLU(0.1, inplace=True),
-            nn.Linear(4096, self.grid_size * self.grid_size * (self.num_classes + self.num_boxes * 5)),
+            nn.Linear(4096, self.grid_size * self.grid_size * (self.classes + self.num_boxes * 5)),
             nn.Sigmoid()
         )
 
