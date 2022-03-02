@@ -53,7 +53,7 @@ def train(jsons_p,imgs_p):
             img_files_path=imgs_p,
             target_files_path=jsons_p,
             category_list=category_list,
-            split_size=14, # Amount of grid cells
+            split_size=7, # Amount of grid cells
             batch_size=hparams['batch_size'],
             load_size=1
         )
@@ -66,7 +66,7 @@ def train(jsons_p,imgs_p):
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
     print(device)
-    loss_fn = YoloLoss(C=hparams['classes'], S=14)
+    loss_fn = YoloLoss(C=hparams['classes'], S=7)
     train_loss_avg = []
     yolo.train()
 

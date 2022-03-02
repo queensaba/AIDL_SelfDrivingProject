@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 class YoloV1Model(nn.Module):
-    def __init__(self, channels=3, classes=80, bb=2, s=14):
+    def __init__(self, channels=3, classes=80, bb=2, s=7):
         super(YoloV1Model, self).__init__()
         self.c = channels
         self.S = s
@@ -10,7 +10,7 @@ class YoloV1Model(nn.Module):
         self.bb = bb  # Number of bounding boxes per cell
         # 448x448 input
         self.conv1 = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=7, stride=2,
-                               padding=3)  # 448x448x3 ->224x224x64
+                               padding=1)  # 448x448x3 ->224x224x64
         self.batchnorm1 = nn.BatchNorm2d(64)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, return_indices=False,
                                      ceil_mode=False)  # 224x224x64 ->112x112x64
@@ -83,7 +83,7 @@ class YoloV1Model(nn.Module):
         # Resolution is bumped to 448x448
 
         self.leakyrelu = nn.LeakyReLU(0.1, inplace=True)  # Leaky RELU Activation
-
+        self.sigmoid = nn.Sigmoid()
     def forward(self, x):
         out1 = self.maxpool1(self.leakyrelu(self.batchnorm1(self.conv1(x))))  # conv1
         out2 = self.maxpool2(self.leakyrelu(self.batchnorm2(self.conv2(out1))))  # conv2
@@ -104,7 +104,7 @@ class YoloV1Model(nn.Module):
                 self.conv22(self.leakyrelu(self.batchnorm21(self.conv21(out6))))))))))))  # From conv21 to conv24
         bsz, nch, height, width = out7.shape
         out7 = out7.view(bsz, nch * height * width)
-        out = self.fc2(self.leakyrelu(self.dropout(self.fc1(out7))))
+        out = self.sigmoid(self.fc2(self.leakyrelu(self.dropout(self.fc1(out7)))))
         # out = self.fc2(self.fc1(out7))
         return out
 
