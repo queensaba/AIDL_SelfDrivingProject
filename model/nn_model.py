@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 
 class YoloV1Model(nn.Module):
-    def __init__(self, channels=3, classes=13, boxes=2, grid_size=7):
+    def __init__(self, channels=3, classes=13, boxes=2, grid_size=14):
         super(YoloV1Model, self).__init__()
         self.c = channels
         self.grid_size = grid_size

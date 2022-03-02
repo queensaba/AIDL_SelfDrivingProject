@@ -53,14 +53,14 @@ def train(jsons_p,imgs_p):
             img_files_path=imgs_p,
             target_files_path=jsons_p,
             category_list=category_list,
-            split_size=7, # Grid Size
+            split_size=14, # Grid Size
             batch_size=hparams['batch_size'],
             load_size=1 # Batches to load at once
         )
     yolo = YoloV1Model(channels=hparams['channels'],
                        classes=hparams['classes'],
                        boxes=2,
-                       grid_size=7)
+                       grid_size=14)
     #optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
     # Test Adam optimizer to enhance convergence
     optimizer = torch.optim.Adam(params=yolo.parameters(), lr=hparams['learning_rate'], weight_decay=0.0005)
