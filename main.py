@@ -53,11 +53,14 @@ def train(jsons_p,imgs_p):
             img_files_path=imgs_p,
             target_files_path=jsons_p,
             category_list=category_list,
-            split_size=14, # Amount of grid cells
+            split_size=14, # Grid Size
             batch_size=hparams['batch_size'],
-            load_size=1
+            load_size=1 # Batches to load at once
         )
-    yolo = YoloV1Model(hparams['channels'],classes=hparams['classes'])
+    yolo = YoloV1Model(channels=hparams['channels'],
+                       classes=hparams['classes'],
+                       boxes=2,
+                       grid_size=14)
     #optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
     # Test Adam optimizer to enhance convergence
     optimizer = torch.optim.Adam(params=yolo.parameters(), lr=hparams['learning_rate'], weight_decay=0.0005)
@@ -66,7 +69,7 @@ def train(jsons_p,imgs_p):
     # Move model to the GPU
     device = torch.device("cuda:0" if use_gpu and torch.cuda.is_available() else "cpu")
     print(device)
-    loss_fn = YoloLoss(C=hparams['classes'], S=14)
+    loss_fn = YoloLoss(C=hparams['classes'], S=7)
     train_loss_avg = []
     yolo.train()
 
@@ -105,10 +108,10 @@ def train(jsons_p,imgs_p):
                 print('')
                 print("=> Saving checkpoint")
                 print("")
-                torch.save(yolo, 'YOLO_bdd100k.pt')
+                torch.save(yolo, 'YOLO_bdd100k_2.pt')
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
+    wandb.init(project="SelfDriving-project-full-cluster", entity="helenamartin",config = {
         "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 64,
