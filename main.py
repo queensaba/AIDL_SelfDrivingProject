@@ -105,10 +105,10 @@ def train(jsons_p,imgs_p):
                 print('')
                 print("=> Saving checkpoint")
                 print("")
-                torch.save(yolo, 'YOLO_bdd100k.pt')
+                torch.save(yolo, 'YOLO_bdd100k_2.pt')
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project", entity="helenamartin",config = {
+    wandb.init(project="SelfDriving-project-full-cluster", entity="helenamartin",config = {
         "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 64,
