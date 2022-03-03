@@ -80,6 +80,8 @@ So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
 
 ## 3. Training YOLO v1
 
+## 3.1 Challenges
+
 ## 4. Transfer Learning
 
 ### 4.1 Introduction to Transfer Learning
@@ -170,7 +172,9 @@ So, we can see that it has worked pretty well. In general, we have seen the best
 
 ## 6. Validation with our own images
 
-## 7. Conclusion and future work
+## 7. Inference
+
+## 8. Conclusion and future work
  In our project we implemented and trained a one stage detector YOLO and two stage detector Faster R-CNN on the BDD 100K dataset in the context of of autonomous vehicles.
 
  The main result: we just explore one of the main critical tasks, namely object detection.
