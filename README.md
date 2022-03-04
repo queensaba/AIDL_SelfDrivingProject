@@ -24,13 +24,14 @@ In order to mitigate these risks, the autonomous vehicle has to be able to sense
 You Only Look Once (YOLO) is an object detection model. The name is due to the fact that this algorithm is able to detect and recognize various objects in a picture (in real-time). It is also important to mention that nowadays there exists many versions of this model (v1, v2, v3, v4,...). We have selected the first one because of resources issues but also we considered really important having clear the main idea of this model and for so, it is enough working with YOLO v1.
 
 The main idea of YOLO is first dividing the input image in a fixed number SxS cells as we can see on the image (in this example S=7):
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156814575-70ecf136-c233-44c9-8c0c-8afb493e210e.jpg)
 
 After that, each of the SxS cells of the grid will be responsible to detect a maximum of 1 object of the image. It is important to know that we say that a cell is responsible for detecting an object if the center of the bounding box of this object is on the cell.
 
 On the following example, the cell (4,3) would be the responsible for detecting the bike:
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput_bbox.png)
+![alt text](https://user-images.githubusercontent.com/94481725/156817957-15c30240-444a-457f-883d-e7704580941d.jpg)
+
 
 In order to do this, YOLO v1 has an architecture consisting of 6 blocks combining convolutional layers with maxpooling layers and followed by 2 fully connected layers. Furthermore it applies the Leaky ReLu activation function after all layers except for the last one and uses dropout between the two fully connected layers in order to tackle overfitting.
 
