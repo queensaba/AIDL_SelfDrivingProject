@@ -24,7 +24,7 @@ In order to mitigate these risks, the autonomous vehicle has to be able to sense
 You Only Look Once (YOLO) is an object detection model. The name is due to the fact that this algorithm is able to detect and recognize various objects in a picture (in real-time). It is also important to mention that nowadays there exists many versions of this model (v1, v2, v3, v4,...). We have selected the first one because of resources issues but also we considered really important having clear the main idea of this model and for so, it is enough working with YOLO v1.
 
 The main idea of YOLO is first dividing the input image in a fixed number SxS cells as we can see on the image (in this example S=7):
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput.PNG)
+![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput.PNG | width=100)
 
 After that, each of the SxS cells of the grid will be responsible to detect a maximum of 1 object of the image. It is important to know that we say that a cell is responsible for detecting an object if the center of the bounding box of this object is on the cell.
 
