@@ -7,11 +7,11 @@
 
  **Problems and Challenges**
 
-Self-Driving cars are important because they help to reduce road accidents. But they also create new risks.  
+Autonomous vehicles offer the opportunity to harness the benefits of combining sensory technologies, with intelligence technologies (AI and deep learning), to make automatic driving decisions which mitigate many risks associated with human driving decisions. These combined technologies have to be able to make driving decisions that are more immediate and accurate than those made by the human driver.  But in addition to the benefits, we also need to consider potential new risks as decision errors and limitations of the self-driving car.   
 
 **Critical Tasks**
 
-In order to mitigate these risks, the autonomous vehicle has to be able to sense and react to its surroundings by performing at least three critical tasks: object detection, drivable area segmentation, and lane detection
+In order to mitigate these new risks, the autonomous vehicle has to be able to sense and react to its surroundings by performing at least three critical tasks: object detection, drivable area segmentation, and lane detection
 
 **Main Project Goal**
    
@@ -35,7 +35,7 @@ On the following example, the cell (4,3) would be the responsible for detecting 
 
 In order to do this, YOLO v1 has an architecture consisting of 6 blocks combining convolutional layers with maxpooling layers and followed by 2 fully connected layers. Furthermore it applies the Leaky ReLu activation function after all layers except for the last one and uses dropout between the two fully connected layers in order to tackle overfitting.
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/yolo_architecture.png)
+![alt text](https://user-images.githubusercontent.com/94481725/156898966-16c34ace-a57e-4974-932f-ab8fc993c72a.jpg)
 
 The dimension of the last fully connected layer would be SxSx(B * 5 + C) where:
 
@@ -49,7 +49,9 @@ So, for each cell of the image you have:
 
 It is more clear showed in this image:
 
+
 ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/lastlayer.PNG)
+
 
 So, we can then understand that when we execute the model, we will obtain SxSx2 bounding boxes but then it will be compared with the ground truth bounding boxes in order to keep only the ones with the highest IoU (intersection over union).
 
