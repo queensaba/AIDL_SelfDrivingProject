@@ -7,15 +7,30 @@
 
  **Problems and Challenges**
 
-Self-Driving cars are important because they help to reduce road accidents. But they also create new risks.  
+**The benefits of Autonomous vehicles**
 
-**Critical Tasks**
+Greater road safety (reduce crash and congestion)
+Independence for people with disabilities (blind, old)
+  
+**New potential risks**.  
+Decision errors that may result in death and injury
+Cybersecurity 
 
-In order to mitigate these risks, the autonomous vehicle has to be able to sense and react to its surroundings by performing at least three critical tasks: object detection, drivable area segmentation, and lane detection
+
+**Critical Tasks to increase benefits and mitigate risks**
+
+Object detection, drivable area segmentation, lane detection, deep detection, etc
 
 **Main Project Goal**
-   
-  We will focus on the first critical task of object detection, is the most important requirement for autonomous navigation and consist both classification and localization.
+
+Focus on traffic  object detection (classification and localization)
+
+Object detection is a crucial for object tracking, trajectory estimation,  and collision avoidanc
+
+**Main Project Challenge**
+
+Detect dynamic road elements (pedestrians, cyclist, vehicles) that are 
+continuously changing location and behaviour under diverse lighting and background conditions
  
 ## 2. YOLO v1
 
