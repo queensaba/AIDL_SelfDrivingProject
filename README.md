@@ -49,10 +49,15 @@ The annotations are provided in a JSON file including:
  **Figure: Number of images in each weather condition in training data set**
   **Figure: Number of images in each weather condition in test data set**
  **Figure: Number of images in each scene in trainnig data set**
+ 
  **Figure: Number of images in each scene in test data set**
+ 
  **Figure: Number of images in each time of the day in training data set**
+ 
  **Figure: Number of images in each time of the day in test data set**
+ 
  **Figure: Number of instances of each category in training data set**
+ 
  **Figure: Number of instances of each category in test data set**
  
  
@@ -122,10 +127,26 @@ So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
 
 ![alt text](https://user-images.githubusercontent.com/94481725/156935209-2b71f713-9d3c-4772-9613-3c9c88e92f16.jpg)
 
+## Evaluation Metrics
+
 
 ## Training YOLO v1
 
 ## Challenges
+### Exploding Gradients
+At first, we experienced exploiding gradients while training our network.
+
+Exploding Gradients are a problem where large error gradients accumulate. This happened because our model was unstable and unacapable of learning from the training data.
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients* |
+
+We observed this problem in it's extreme form, since the weight values resulted in NaN and can no longer be updated.
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients_nan.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients until NaN values* |
+
 
 ## Transfer Learning
 
