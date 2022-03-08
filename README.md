@@ -131,8 +131,15 @@ So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
 ### Exploding Gradients
 At first, we experienced exploiding gradients while training our network.
 Exploding Gradients are a problem where large error gradients accumulate. This happened because our model was unstable and unacapable of learning from the training data.
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients* |
+
 We observed this problem in it's extreme form, since the weight values resulted in NaN and can no longer be updated.
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients.png?raw=true)
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients_nan.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients until NaN values* |
 
 
 ## Transfer Learning
