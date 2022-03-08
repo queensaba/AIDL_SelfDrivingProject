@@ -1,7 +1,13 @@
-# Main file of the project
+import torch
+from torchsummary import summary
+import matplotlib.pyplot as plt
+from model.nn_model import YoloV1Model
+from data import DataLoader
+from utils import retrieve_box
+import torchvision
+from torchvision.utils import draw_bounding_boxes
 import pdb
 import wandb
-import torch
 import os
 import numpy as np
 import argparse as ap
@@ -17,6 +23,10 @@ def get_args():
                         help="Path to folder with JSON data.")
     parser.add_argument("-i", "--imgs", type=str, required=True,
                        help="Path to folder with images.")
+    parser.add_argument("-b", "--batch_size", type=int)
+    parser.add_argument("-lr", "--learning_rate", type=float)
+    parser.add_argument("-bb", "--nboxes", type=int)
+    parser.add_argument("-s", "--split_size", type=int)
     args = parser.parse_args()
     return args
 
@@ -24,14 +34,7 @@ def get_args():
 
 def train(jsons_p,imgs_p):
     # Training yolo v1
-    import torch
-    from torchsummary import summary
-    import matplotlib.pyplot as plt
-    from model.nn_model import YoloV1Model
-    from data import DataLoader
-    from utils import retrieve_box
-    import torchvision
-    from torchvision.utils import draw_bounding_boxes
+
 
     category_list = ["other vehicle", "pedestrian", "traffic light", "traffic sign",
                      "truck", "train", "other person", "bus", "car", "rider", "motorcycle",
@@ -53,14 +56,14 @@ def train(jsons_p,imgs_p):
             img_files_path=imgs_p,
             target_files_path=jsons_p,
             category_list=category_list,
-            split_size=14, # Grid Size
+            split_size=7, # Grid Size
             batch_size=hparams['batch_size'],
             load_size=1 # Batches to load at once
         )
     yolo = YoloV1Model(channels=hparams['channels'],
                        classes=hparams['classes'],
-                       boxes=2,
-                       grid_size=14)
+                       bb=2,
+                       s=7)
     #optimizer = torch.optim.SGD(params=yolo.parameters(), lr=hparams['learning_rate'], momentum=0.9, weight_decay=0.0005)
     # Test Adam optimizer to enhance convergence
     optimizer = torch.optim.Adam(params=yolo.parameters(), lr=hparams['learning_rate'], weight_decay=0.0005)
@@ -99,7 +102,6 @@ def train(jsons_p,imgs_p):
                 wandb.log({"loss": loss})
 
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(yolo.parameters(), 100.0)
                 optimizer.step()
 
                 print('Train Epoch: {} of {} [Batch: {}/{} ({:.0f}%)] Loss: {:.6f}'.format(
@@ -111,7 +113,8 @@ def train(jsons_p,imgs_p):
                 torch.save(yolo, 'YOLO_bdd100k_2.pt')
 
 if __name__ == '__main__':
-    wandb.init(project="SelfDriving-project-full-cluster", entity="helenamartin",config = {
+
+    wandb.init(project="SelfDriving-project-full-debug", entity="helenamartin",config = {
         "learning_rate": 0.0001,
         "epochs": 100,
         "batch_size": 64,

@@ -1,5 +1,4 @@
 import pdb
-
 import torch
 from torchvision import transforms
 from os import listdir
@@ -9,26 +8,9 @@ import random
 
 
 class DataLoader():
-    """
-    This class uses its attributes to load the img data and transforms it into tensors.
-    The tensors are then stored in mini-batches inside the data list which is the final 
-    product of this class. Multiple function calls of LoadData() will initialize the data 
-    list with new tensors from the image folder, excluding all the previous ones. 
-    """
 
     def __init__(self, img_files_path, target_files_path, category_list, split_size, 
                  batch_size, load_size):
-        """
-        Initialize all parameters for loading and transforming the data into tensors.
-        
-        Parameters:
-            img_files_path (string): The path to the image folder.
-            target_files_path (string): The path to the json file containg the image labels.
-            category_list (list): Reference list to all the class labels.
-            split_size (int): Amount of grid cells.
-            batch_size (int): Batch size.
-            load_size (int): Amount of batches which are loaded in one function call.
-        """
         
         self.img_files_path = img_files_path
         self.target_files_path = target_files_path       
@@ -54,10 +36,6 @@ class DataLoader():
     
 
     def LoadFiles(self):
-        """
-        First function to be executed.
-        Loads the images and the label file using the respective system path.
-        """
             
         # All image names from the directory are loaded into the list img_files.
         self.img_files = listdir(self.img_files_path)
@@ -68,13 +46,6 @@ class DataLoader():
         
         
     def LoadData(self):
-        """
-        Transforms the image files and labels into tensors and loads them into batches. 
-        Once a batch is full, it is stored in the data list. Fills the data list with 
-        batches until the desired load_size is reached. Every image that is loaded, 
-        is being excluded from future calls of this function.
-        """
-        
         # Reset the cache
         self.data = []    
         self.img_tensors = [] 
@@ -101,12 +72,6 @@ class DataLoader():
 
 
     def extract_image_and_label(self):
-        """
-        Chooses a random image which is then being transformed into a tensor and 
-        stored. Finds the corresponding label inside the json file which is then 
-        being transformed into a tensor and stored. Stores both tensors inside 
-        the img_tensors and target_tensors lists.
-        """
         
         img_tensor, chosen_image = self.extract_image()
         target_tensor = self.extract_json_label(chosen_image)
@@ -119,14 +84,7 @@ class DataLoader():
             print("")
 
         
-    def extract_image(self):   
-        """
-        Finds a random image from the train_files list and applies the transform to it. 
- 
-        Returns:
-            img_tensor (tensor): The tensor which contains the image values.
-            f (string): The string name of the image file.
-        """    
+    def extract_image(self):
         
         f = random.choice(self.img_files)
         self.img_files.remove(f)
@@ -138,15 +96,6 @@ class DataLoader():
 
 
     def extract_json_label(self, chosen_image):
-        """
-        Uses the name of the image to find the corresponding json element. Then it 
-        extracts the data and transforms it into a tensor which is stored inside 
-        the target_tensors list.
-        Parameters:
-            chosen_image (string): The name of the image for which the label is needed.
-        Returns:
-            target_tensor (tensor): The tensor which contains the image labels.
-        """
         
         for json_el in self.target_files:
             if json_el['name'] == chosen_image:
@@ -165,18 +114,6 @@ class DataLoader():
 
 
     def transform_label_to_tensor(self, img_label):
-        """
-        Extracts the useful information from the json element and transforms them 
-        into a tensor.
-        
-        Parameters:
-            img_label (): A specific json element.
-            
-        Returns:
-            target_tensor (tensor): A tensor of size (split_size,split_size,5+num_classes) 
-            which is used as the target of the image.
-        """
-        
         # Here is the information stored
         target_tensor = torch.zeros(self.split_size, self.split_size, 5+self.num_classes)
 
