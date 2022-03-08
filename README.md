@@ -31,10 +31,32 @@ Object detection is a crucial for object tracking, trajectory estimation,  and c
 
 Detect dynamic road elements (pedestrians, cyclist, vehicles) that are 
 continuously changing location and behaviour under diverse lighting and background conditions
- 
-## 2. YOLO v1
 
-### 2.1 Architecture and main idea of YOLO v1
+## Dataset
+The Berkeley Deep Drive dataser contains a variety annotated images for 2D and 3D object detection, instance segmentation, lane markings, etc. For our project, we use the annotated images for 2D object detection.
+The dataset consists over 100.000 video clips of driving videos in different conditions. For 2D object detection, an extraction on 100.000 clips is done to obtain images and the annotations of the bounding boxes.
+The images are in RGB and have a size of 1280x720 pixels.
+The annotations are provided in a JSON file including:
+- Bounding Boxes and the corresponding object class
+- Weather
+- Time of the day
+- Scene
+ The video clips from where the images are extracted are filmed in different parts of the USA.
+ **INSERT IMAGE LOCATIONS DATASET**
+ 
+ ### Analysis of the Datset
+ 
+ **Figure: Number of images in each weather condition in training data set**
+  **Figure: Number of images in each weather condition in test data set**
+ **Figure: Number of images in each scene in trainnig data set**
+ **Figure: Number of images in each scene in test data set**
+ **Figure: Number of images in each time of the day in training data set**
+ **Figure: Number of images in each time of the day in test data set**
+ **Figure: Number of instances of each category in training data set**
+ **Figure: Number of instances of each category in test data set**
+ 
+ 
+## YOLO v1: Architecture
 
 You Only Look Once (YOLO) is an object detection model. The name is due to the fact that this algorithm is able to detect and recognize various objects in a picture (in real-time). It is also important to mention that nowadays there exists many versions of this model (v1, v2, v3, v4,...). We have selected the first one because of resources issues but also we considered really important having clear the main idea of this model and for so, it is enough working with YOLO v1.
 
@@ -68,7 +90,7 @@ It is more clear showed in this image:
 
 So, we can then understand that when we execute the model, we will obtain SxSx2 bounding boxes but then it will be compared with the ground truth bounding boxes in order to keep only the ones with the highest IoU (intersection over union).
 
-### 2.2 Loss in YOLO v1
+### Loss functions
 
 The loss function in YOLO v1 is not one of the classic losses in neural networks. In this case, the loss is divided in different losses that we will see now:
 **1. Bounding box loss**: This loss as the name suggests refers to the bounding box and it is divided into 2 different losses:
@@ -101,13 +123,13 @@ So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
 ![alt text](https://user-images.githubusercontent.com/94481725/156935209-2b71f713-9d3c-4772-9613-3c9c88e92f16.jpg)
 
 
-## 3. Training YOLO v1
+## Training YOLO v1
 
-## 3.1 Challenges
+## Challenges
 
-## 4. Transfer Learning
+## Transfer Learning
 
-### 4.1 Introduction to Transfer Learning
+### Introduction to Transfer Learning
 First of all, we will make a very quick introduction to Transfer Learning. The main idea of TL is using models already trained on our custom dataset. In order to do that, there are some steps that should be done:
 
 1. Select a model that performs the same (or a very similar) task as we want to do in order to take advantage of the features that the pretrained model already trained
@@ -119,7 +141,7 @@ First of all, we will make a very quick introduction to Transfer Learning. The m
 
 The main advantages of doing transfer learning are the saving of computer and time resources but also the "no-need" to have huge datasets that normally are difficult/expensive to label.
 
-### 4.2 Application of Transfer Learning in this project
+### Application of Transfer Learning in this project
 
 As we have used the Pytorch environment on this project, we have taken advantage of some models already pretrained on pytorch and COCO dataset. So, we have selected 2 of the best performing models:
 
@@ -195,13 +217,13 @@ So, we can see that it has worked pretty well. In general, we have seen the best
 
 
 
-## 5. Models comparison
+## Models comparison
 
-## 6. Validation with our own images
+## Validation with our own images
 
-## 7. Inference
+## Inference
 
-## 8. Conclusion and future work
+## Conclusion and future work
  In our project we implemented and trained a one stage detector YOLO and two stage detector Faster R-CNN on the BDD 100K dataset in the context of of autonomous vehicles.
 
  The main result: we just explore one of the main critical tasks, namely object detection.
