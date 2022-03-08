@@ -129,6 +129,33 @@ So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
 
 ## Evaluation Metrics
 
+We used several metrics to evaluate our object detection model.
+
+### Intersection over Union (IoU)
+Intersection over Union is a metric used to measure the overlap between two vounding voxes.
+If the prediction is correct, the Iou is equal to 1. Therefore, the lower the IoU, the worse the prediction result.
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/IoU.png?raw=true) |
+|:--:|
+| *Computation of Intersection over Union* |
+
+
+In our project we used the IoU to classify the predictions as True Positives (TP), False Positives (FP) and False Negatives (FN):
+- IoU >= 0.5: The prediction is classified as a True Positive (TP).
+- IoU <  0.5: The prediction is classified as a False Positive (FP).
+- When the model failed to detect and object in an image, the prediction is classified as a False Negative (FN)
+
+To evaluate the performance of the model, we used the previous tP, FP and FN classifications to compute the precision and recall of the model.
+On the one hande, the **precision** measures how accurate are our predictions, thus, the percentage of predictions that are correct. On the other hand, **recall** measures how good the model finds all the positives in a set of predictions.
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/precision_recall.png?raw=true) |
+|:--:|
+| *Computation of Precision and Recall* |
+
+### Mean Average Precision (mAP)
+Average precision computes the average precision values for recall value oer 0 to 1. 
+To compute the Average Precision we find the area under the curve of the precision-recall curve. 
+
 
 ## Training YOLO v1
 
