@@ -7,34 +7,76 @@
 
  **Problems and Challenges**
 
-Self-Driving cars are important because they help to reduce road accidents. But they also create new risks.  
+**The benefits of Autonomous vehicles**
 
-**Critical Tasks**
+Greater road safety (reduce crash and congestion)
+Independence for people with disabilities (blind, old)
+  
+**New potential risks**.  
+Decision errors that may result in death and injury
+Cybersecurity 
 
-In order to mitigate these risks, the autonomous vehicle has to be able to sense and react to its surroundings by performing at least three critical tasks: object detection, drivable area segmentation, and lane detection
+
+**Critical Tasks to increase benefits and mitigate risks**
+
+Object detection, drivable area segmentation, lane detection, deep detection, etc
 
 **Main Project Goal**
-   
-  We will focus on the first critical task of object detection, is the most important requirement for autonomous navigation and consist both classification and localization.
- 
-## 2. YOLO v1
 
-### 2.1 Architecture and main idea of YOLO v1
+Focus on traffic  object detection (classification and localization)
+
+Object detection is a crucial for object tracking, trajectory estimation,  and collision avoidanc
+
+**Main Project Challenge**
+
+Detect dynamic road elements (pedestrians, cyclist, vehicles) that are 
+continuously changing location and behaviour under diverse lighting and background conditions
+
+## Dataset
+The Berkeley Deep Drive dataser contains a variety annotated images for 2D and 3D object detection, instance segmentation, lane markings, etc. For our project, we use the annotated images for 2D object detection.
+The dataset consists over 100.000 video clips of driving videos in different conditions. For 2D object detection, an extraction on 100.000 clips is done to obtain images and the annotations of the bounding boxes.
+The images are in RGB and have a size of 1280x720 pixels.
+The annotations are provided in a JSON file including:
+- Bounding Boxes and the corresponding object class
+- Weather
+- Time of the day
+- Scene
+ The video clips from where the images are extracted are filmed in different parts of the USA.
+ **INSERT IMAGE LOCATIONS DATASET**
+ 
+ ### Analysis of the Datset
+ 
+ **Figure: Number of images in each weather condition in training data set**
+  **Figure: Number of images in each weather condition in test data set**
+ **Figure: Number of images in each scene in trainnig data set**
+ 
+ **Figure: Number of images in each scene in test data set**
+ 
+ **Figure: Number of images in each time of the day in training data set**
+ 
+ **Figure: Number of images in each time of the day in test data set**
+ 
+ **Figure: Number of instances of each category in training data set**
+ 
+ **Figure: Number of instances of each category in test data set**
+ 
+ 
+## YOLO v1: Architecture
 
 You Only Look Once (YOLO) is an object detection model. The name is due to the fact that this algorithm is able to detect and recognize various objects in a picture (in real-time). It is also important to mention that nowadays there exists many versions of this model (v1, v2, v3, v4,...). We have selected the first one because of resources issues but also we considered really important having clear the main idea of this model and for so, it is enough working with YOLO v1.
 
 The main idea of YOLO is first dividing the input image in a fixed number SxS cells as we can see on the image (in this example S=7):
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156919394-0a670c9b-4c32-4f21-b4da-f84793e38d99.jpg)
 
 After that, each of the SxS cells of the grid will be responsible to detect a maximum of 1 object of the image. It is important to know that we say that a cell is responsible for detecting an object if the center of the bounding box of this object is on the cell.
 
 On the following example, the cell (4,3) would be the responsible for detecting the bike:
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/gridinput_bbox.png)
+![alt text](https://user-images.githubusercontent.com/94481725/156919554-b71cf241-c44f-4c2a-a214-f4bb080f30e9.jpg)
 
 In order to do this, YOLO v1 has an architecture consisting of 6 blocks combining convolutional layers with maxpooling layers and followed by 2 fully connected layers. Furthermore it applies the Leaky ReLu activation function after all layers except for the last one and uses dropout between the two fully connected layers in order to tackle overfitting.
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/yolo_architecture.png)
+![alt text](https://user-images.githubusercontent.com/94481725/156921245-b489fc5f-b218-41b8-9c38-27ca6a868e7b.jpg)
 
 The dimension of the last fully connected layer would be SxSx(B * 5 + C) where:
 
@@ -48,41 +90,94 @@ So, for each cell of the image you have:
 
 It is more clear showed in this image:
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/lastlayer.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156921416-21bb7fe4-35cc-48a5-878b-0a5cffa70b77.jpg)
+
 
 So, we can then understand that when we execute the model, we will obtain SxSx2 bounding boxes but then it will be compared with the ground truth bounding boxes in order to keep only the ones with the highest IoU (intersection over union).
 
-### 2.2 Loss in YOLO v1
+### Loss functions
 
 The loss function in YOLO v1 is not one of the classic losses in neural networks. In this case, the loss is divided in different losses that we will see now:
 **1. Bounding box loss**: This loss as the name suggests refers to the bounding box and it is divided into 2 different losses:
 
 1.1. *Bounding box centroid loss*: This will be the distance of the center of the predicted bounding box and the ground truth bounding box but it is important to keep in mind that it is only computed when there actually exists an object on the studied cell. It is computed as follows: 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/bboxcoord.PNG)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156934299-24356708-fede-4f9d-a460-eebf373cfcfc.jpg)
 
 1.2. *Bounding box size loss*: This one is computed as the distance of the width and height of the predicted bounding box and the ground truth bounding box but it is important to keep in mind that it is only computed when there actually exists an object on the studied cell. In this case we have to keep in mind also that it is computed the sqrt because otherwise larger bounding boxes would have more importance on this loss.
 
 The formal formula is:
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/bboxsize.PNG)
+
+
+![alt text](https://user-images.githubusercontent.com/94481725/156934449-92bfa605-1b96-4941-ad34-99e76fc6b261.jpg)
 
 **2. Object loss**: This loss refers to the error that is done when assigning object probability and in the ground-truth there is an object. In other words, if there is an object on a particular cell, which is the difference between the P(Object) and 1? It is computed as follows:
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/obj.PNG)
+
+
+![alt text](https://user-images.githubusercontent.com/94481725/156935053-01381f1d-f6a0-4d12-a2c7-4b13d3d37aa1.jpg)
 
 **3. No Object loss**: This loss refers to the error that is done when assigning object probability and in the ground-truth there is not any object. In other words, if there is not any object on a particular cell, which is the difference between the P(Object) and 0? It is computed as follows:
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/noobj.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156924120-642363df-40cd-4245-b736-a21a5c3c70d9.jpg)
 
 **4. Class loss**: In this last loss, we are computing the error made when assigning a class to a detected object, so it is pretty similar as the previous loss but in this case, we are looking at the P(Class i | Object). The formula is:
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/classprob.PNG)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156924363-1f7bb066-d6ef-4a7f-ae6d-b73be7d1e70c.jpg)
 
 So, finally, if we add all these losses, we will obtain the loss of YOLO v1:
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/lossformula.PNG)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156935209-2b71f713-9d3c-4772-9613-3c9c88e92f16.jpg)
+
+## Evaluation Metrics
+
+We used several metrics to evaluate our object detection model.
+
+### Intersection over Union (IoU)
+Intersection over Union is a metric used to measure the overlap between two vounding voxes.
+If the prediction is correct, the Iou is equal to 1. Therefore, the lower the IoU, the worse the prediction result.
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/IoU.png?raw=true) |
+|:--:|
+| *Computation of Intersection over Union* |
 
 
-## 3. Training YOLO v1
+In our project we used the IoU to classify the predictions as True Positives (TP), False Positives (FP) and False Negatives (FN):
+- IoU >= 0.5: The prediction is classified as a True Positive (TP).
+- IoU <  0.5: The prediction is classified as a False Positive (FP).
+- When the model failed to detect and object in an image, the prediction is classified as a False Negative (FN)
 
-## 4. Transfer Learning
+To evaluate the performance of the model, we used the previous tP, FP and FN classifications to compute the precision and recall of the model.
+On the one hande, the **precision** measures how accurate are our predictions, thus, the percentage of predictions that are correct. On the other hand, **recall** measures how good the model finds all the positives in a set of predictions.
 
-### 4.1 Introduction to Transfer Learning
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/precision_recall.png?raw=true) |
+|:--:|
+| *Computation of Precision and Recall* |
+
+### Mean Average Precision (mAP)
+Average precision computes the average precision values for recall value oer 0 to 1. 
+To compute the Average Precision we find the area under the curve of the precision-recall curve. 
+
+
+## Training YOLO v1
+
+## Challenges
+### Exploding Gradients
+At first, we experienced exploiding gradients while training our network.
+
+Exploding Gradients are a problem where large error gradients accumulate. This happened because our model was unstable and unacapable of learning from the training data.
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients* |
+
+We observed this problem in it's extreme form, since the weight values resulted in NaN and can no longer be updated.
+
+| ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/Exploding_gradients_nan.png?raw=true) |
+|:--:|
+| *Example plot of exploding gradients until NaN values* |
+
+
+## Transfer Learning
+
+### Introduction to Transfer Learning
 First of all, we will make a very quick introduction to Transfer Learning. The main idea of TL is using models already trained on our custom dataset. In order to do that, there are some steps that should be done:
 
 1. Select a model that performs the same (or a very similar) task as we want to do in order to take advantage of the features that the pretrained model already trained
@@ -94,7 +189,7 @@ First of all, we will make a very quick introduction to Transfer Learning. The m
 
 The main advantages of doing transfer learning are the saving of computer and time resources but also the "no-need" to have huge datasets that normally are difficult/expensive to label.
 
-### 4.2 Application of Transfer Learning in this project
+### Application of Transfer Learning in this project
 
 As we have used the Pytorch environment on this project, we have taken advantage of some models already pretrained on pytorch and COCO dataset. So, we have selected 2 of the best performing models:
 
@@ -104,12 +199,12 @@ As we have used the Pytorch environment on this project, we have taken advantage
   
   2. Classifier: Here, the object classification will be done once the RPN has send to it some region proposals
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/FasterRCNN.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156935475-d38f8f50-90e9-482b-99c5-34bf1f1b7588.jpg)
 
 
 * RetinaNet: This is a one-stage object detection model that utilizes a focal loss function to address class imbalance during training.
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/report/RetinaNetArch.PNG)
+![alt text](https://user-images.githubusercontent.com/94481725/156935669-17567676-0f0e-4033-ac00-cc54477dc0e5.jpg)
 
 The Transfer Learning codes are on the directory *transfer_learning* and in order to reproduce them, we have a mini subset of our dataset in *transfer_learning/data*. We can do the first part of "retraining the models" using the codes *train_FasterRCNN.py* and *train_RetinaNet.py*. 
 
@@ -148,28 +243,47 @@ python inference_FasterRCNN_resnet50.py -i "data/DeepDriving/test/fd5bae34-d63db
 
 The image with the bounding boxes of the objects detected will be automatically showed and saved on *predictions/prediction_FastRCNN-ResNet50fd5bae34-d63db3d7.jpg*. In this particular case, the result would be:
 
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/transfer_learning/predictions/prediction_FastRCNN-ResNet50fd5bae34-d63db3d7.jpg)
+![alt text](https://user-images.githubusercontent.com/94481725/156932373-8892b364-6e24-4b0f-b2ab-65c55c0e201b.jpg)
 
 So, we can see that it has worked pretty well. In general, we have seen the best results when using FastRCNN with ResNet50 backbone and the worst with Fast R-CNN and MobileNet v3-320. In fact, if we compare this image predicted with the other pretrained models:
 
 **FastRCNN with MobileNet v3**
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/transfer_learning/predictions/prediction_FastRCNN-MobileNetv3fd5bae34-d63db3d7.jpg)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156932786-ebf34c90-201e-4dfd-8faf-3e70467aeb49.jpg)
 
 **FastRCNN with MobileNet v3-320**
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/transfer_learning/predictions/prediction_FastRCNN-MobileNetv3-320fd5bae34-d63db3d7.jpg)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156933141-8235ec4c-92e9-445c-bfa9-9ee19f29a083.jpg)
 
 **FastRCNN with ResNet50**
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/transfer_learning/predictions/prediction_FastRCNN-ResNet50fd5bae34-d63db3d7.jpg)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156933380-d23eb36c-e577-4f0c-a8cc-8ea7df6ab430.jpg)
 
 **RetinaNet with ResNet50**
-![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/dev/transfer_learning/predictions/prediction_RetinaNet-ResNet50fd5bae34-d63db3d7.jpg)
+
+![alt text](https://user-images.githubusercontent.com/94481725/156934024-869e4bc5-58d8-4c49-b34d-696e32e5c25b.jpg)
 
 
 
-## 5. Models comparison
+## Models comparison
 
-## 6. Validation with our own images
+## Validation with our own images
 
-## 7. Conclusion and future work
+## Inference
 
+## Conclusion and future work
+ In our project we implemented and trained a one stage detector YOLO and two stage detector Faster R-CNN on the BDD 100K dataset in the context of of autonomous vehicles.
+
+ The main result: we just explore one of the main critical tasks, namely object detection.
+
+ Since we used the first version of YOLO in this project, in the future we must experiment with newer models, for instance the most recent  versions of YOLO,
+
+ In the Future we will need to explore these three tasks simultaneously. We may add a four critical task: deep detection. This would allow us to reach performance with high accuracy and high FPS which are suitable for the goal of autonomous driving.
+
+ Since autonomous vehicles take decisions involving matters of life and death, we will have to find new ways to train the autonomous vehicle to make these complex decisions.
+
+ **Generally we would need higher precision and real-time driving perception system that can assist the autonomous vehicle in making the reasonable decision while driving safely.**
+
+
+## 9. References
 
