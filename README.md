@@ -156,6 +156,10 @@ On the one hande, the **precision** measures how accurate are our predictions, t
 Average precision computes the average precision values for recall value oer 0 to 1. 
 To compute the Average Precision we find the area under the curve of the precision-recall curve. 
 
+## Computational Resources
+
+**ADD NVIDIA-SMI OUTPUT AND EXLPAIN NUMBER OF CPUS, TYPE OF GPU ETC.**
+
 
 ## Training YOLO v1
 
