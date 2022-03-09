@@ -46,15 +46,17 @@ The annotations are provided in a JSON file including:
  
  ### Analysis of the Datset
  
- **Figure: Number of images in each weather condition in training data set**
-  **Figure: Number of images in each weather condition in test data set**
- **Figure: Number of images in each scene in trainnig data set**
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/weather_plot_val.png?raw=true) |
+|:--:|
+| * Number of images in each weather condition in validation data set* |
+
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/scene_plot_val.png?raw=true) |
+|:--:|
+| * Number of images in each scene in test data set* | 
  
- **Figure: Number of images in each scene in test data set**
- 
- **Figure: Number of images in each time of the day in training data set**
- 
- **Figure: Number of images in each time of the day in test data set**
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/timeofday_plot_val.png?raw=true) |
+|:--:|
+| * Number of images in each time of the day in test data set* |  
  
  **Figure: Number of instances of each category in training data set**
  
