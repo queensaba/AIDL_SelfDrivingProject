@@ -14,7 +14,7 @@ Independence for people with disabilities (blind, old)
   
 **New potential risks**.  
 Decision errors that may result in death and injury
-Cybersecurity 
+Cybersecurity:
 
 
 **Critical Tasks to increase benefits and mitigate risks**
