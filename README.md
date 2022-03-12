@@ -9,10 +9,12 @@
 
 **The benefits of Autonomous vehicles**
 
-Greater road safety (reduce crash and congestion)
+Greater road safety, reduce crash, and congestion,
+
 Independence for people with disabilities (blind, old)
   
 **New potential risks**.  
+
 Decision errors that may result in death and injury
 Cybersecurity:
 
@@ -33,7 +35,7 @@ Detect dynamic road elements (pedestrians, cyclist, vehicles) that are
 continuously changing location and behaviour under diverse lighting and background conditions
 
 ## Dataset
-The Berkeley Deep Drive dataser contains a variety annotated images for 2D and 3D object detection, instance segmentation, lane markings, etc. For our project, we use the annotated images for 2D object detection.
+The Berkeley Deep Drive dataset contains a variety annotated images for 2D and 3D object detection, instance segmentation, lane markings, etc. For our project, we use the annotated images for 2D object detection.
 The dataset consists over 100.000 video clips of driving videos in different conditions. For 2D object detection, an extraction on 100.000 clips is done to obtain images and the annotations of the bounding boxes.
 The images are in RGB and have a size of 1280x720 pixels.
 The annotations are provided in a JSON file including:
@@ -290,4 +292,26 @@ So, we can see that it has worked pretty well. In general, we have seen the best
 
 
 ## 9. References
+
+Gene Lewis. Object detection for autonomous vehicles, 2014.
+
+ Jason Brownlee. A gentle introduction to object recognition with deep learning. Machine Learning Mastery, 5, 2019.
+
+S. Ren, K. He, R. Girshick, and J. Sun, “Faster r-cnn: Towards realtime object detection with region proposal networks,” arXiv preprint arXiv:1506.01497, 2015
+
+ A. Bochkovskiy, C.-Y. Wang, and H.-Y. M. Liao, “Yolov4: Optimal speed and accuracy of object detection,” arXiv preprint arXiv:2004.10934, 2020
+
+ A. Paszke, A. Chaurasia, S. Kim, and E. Culurciello, “Enet: A deep neural network architecture for real-time semantic segmentation,” arXiv preprint arXiv:1606.02147, 2016
+
+H. Zhao, J. Shi, X. Qi, X. Wang, and J. Jia, “Pyramid scene parsing network,” in Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), July 2017
+
+ X. Pan, J. Shi, P. Luo, X. Wang, and X. Tang, “Spatial as deep: Spatial cnn for traffic scene understanding,” in Proceedings of the AAAI Conference on Artificial Intelligence, vol. 32, no. 1, 2018
+
+Y. Hou, Z. Ma, C. Liu, and C. C. Loy, “Learning lightweight lane detection cnns by self-attention distillation,” in Proceedings of the IEEE/CVF International Conference on Computer Vision, 2019, pp. 1013–1021
+
+ C.-Y. Wang, A. Bochkovskiy, and H.-Y. M. Liao, “Scaled-yolov4: Scaling cross stage partial network,” arXiv preprint arXiv:2011.08036, 2020.
+
+Joseph Redmon, Santosh Divvala, Ross Girshick, and Ali Farhadi. You only look once: Unified, real-time object detection. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 779-788, 2016.
+
+
 
