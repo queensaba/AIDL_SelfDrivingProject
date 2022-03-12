@@ -16,8 +16,7 @@ Independence for people with disabilities (blind, old)
 **New potential risks**.  
 
 Decision errors that may result in death and injury
-
-Cybersecurity 
+Cybersecurity:
 
 
 **Critical Tasks to increase benefits and mitigate risks**
@@ -49,19 +48,19 @@ The annotations are provided in a JSON file including:
  
  ### Analysis of the Datset
  
- **Figure: Number of images in each weather condition in training data set**
-  **Figure: Number of images in each weather condition in test data set**
- **Figure: Number of images in each scene in trainnig data set**
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/weather_plot_val.png?raw=true) | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/weather_plot.png?raw=true) |
+|:--:|:--:|
+| *Number of images in each weather condition in validation data set* | *Number of images in each weather condition in test data set* |
+
+
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/scene_plot_val.png?raw=true) | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/scene_plot.png?raw=true) |
+|:--:|:--:|
+| *Number of images in each scene in validation data set* | *Number of images in each scene in test data set* | 
  
- **Figure: Number of images in each scene in test data set**
+ | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/timeofday_plot_val.png?raw=true)  | ![alt text](https://github.com/hemahecodes/AIDL_SelfDrivingProject/blob/main/data/timeofday_plot.png?raw=true) |
+|:--:|:--:|
+| *Number of images in each time of the day in validation data set* | *Number of images in each time of the day in test data set* |  
  
- **Figure: Number of images in each time of the day in training data set**
- 
- **Figure: Number of images in each time of the day in test data set**
- 
- **Figure: Number of instances of each category in training data set**
- 
- **Figure: Number of instances of each category in test data set**
  
  
 ## YOLO v1: Architecture
